@@ -1,0 +1,229 @@
+{
+  "model_name": "CreditAI Risk Assessment Engine V1",
+  "target_name": "TARGET",
+  "id_column": "SK_ID_CURR",
+  "random_state": 42,
+  "dataset_split": {
+    "total_records": 307511,
+    "train_records": 215257,
+    "validation_records": 46127,
+    "test_records": 46127,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15
+  },
+  "feature_summary": {
+    "total_features": 30,
+    "numerical_features": [
+      "age_years",
+      "family_member_count",
+      "income_monthly",
+      "employment_years",
+      "employment_anomaly_flag",
+      "loan_credit_amount",
+      "loan_annuity_emi",
+      "loan_term_estimated_months",
+      "credit_to_goods_ratio",
+      "payment_to_income_ratio",
+      "credit_to_income_ratio",
+      "disposable_income_per_capita",
+      "ext_source_mean",
+      "ext_sources_available_count",
+      "bureau_inquiries_last_month",
+      "days_since_last_phone_change",
+      "bureau_total_loans_count",
+      "bureau_active_loans_count",
+      "bureau_total_debt_sum",
+      "bureau_utilization_ratio",
+      "bureau_max_days_past_due",
+      "bureau_credit_history_length_years",
+      "prev_app_total_count",
+      "prev_app_refused_count",
+      "prev_app_refusal_rate",
+      "installment_max_delay_days",
+      "installment_late_payment_count",
+      "installment_underpayment_count"
+    ],
+    "categorical_features": [
+      "education_level",
+      "income_type"
+    ],
+    "processed_feature_count": 41
+  },
+  "model_architecture": {
+    "base_model": "HistGradientBoostingClassifier",
+    "base_hyperparameters": {
+      "class_weight": "balanced",
+      "max_iter": 150,
+      "max_depth": 8,
+      "learning_rate": 0.08,
+      "random_state": 42
+    },
+    "calibration_method": "sigmoid (Platt Scaling) fitted strictly on validation set",
+    "frozen_operating_threshold": 0.16
+  },
+  "validation_model_comparison": {
+    "Logistic Regression": {
+      "roc_auc": 0.7449721222580339,
+      "pr_auc": 0.2256014978237218,
+      "brier_score": 0.204111751651767,
+      "operating_threshold": 0.5,
+      "precision": 0.16153103891926665,
+      "recall": 0.6742749731471536,
+      "f1_score": 0.2606258757589911,
+      "predicted_positive_rate": 0.33700435753463265,
+      "confusion_matrix": [
+        [
+          29369,
+          13034
+        ],
+        [
+          1213,
+          2511
+        ]
+      ]
+    },
+    "Random Forest": {
+      "roc_auc": 0.7527890534162345,
+      "pr_auc": 0.22900947922566128,
+      "brier_score": 0.17301824131574012,
+      "operating_threshold": 0.5,
+      "precision": 0.1849545607539549,
+      "recall": 0.5902255639097744,
+      "f1_score": 0.2816504356740133,
+      "predicted_positive_rate": 0.25763652524551783,
+      "confusion_matrix": [
+        [
+          32717,
+          9686
+        ],
+        [
+          1526,
+          2198
+        ]
+      ]
+    },
+    "Hist Gradient Boosting": {
+      "roc_auc": 0.7617010915644382,
+      "pr_auc": 0.2464736132666352,
+      "brier_score": 0.18831898684117254,
+      "operating_threshold": 0.5,
+      "precision": 0.17335352006056018,
+      "recall": 0.6764232008592911,
+      "f1_score": 0.2759791837852643,
+      "predicted_positive_rate": 0.31502157088039545,
+      "confusion_matrix": [
+        [
+          30391,
+          12012
+        ],
+        [
+          1205,
+          2519
+        ]
+      ]
+    }
+  },
+  "validation_calibrated_metrics": {
+    "roc_auc": 0.7617010915644382,
+    "pr_auc": 0.2464736132666352,
+    "brier_score": 0.0678532155428794,
+    "operating_threshold": 0.16,
+    "precision": 0.23504394669690956,
+    "recall": 0.4452201933404941,
+    "f1_score": 0.3076637595101132,
+    "predicted_positive_rate": 0.15292561840137012,
+    "confusion_matrix": [
+      [
+        37007,
+        5396
+      ],
+      [
+        2066,
+        1658
+      ]
+    ]
+  },
+  "final_test_metrics": {
+    "roc_auc": 0.764945673822351,
+    "pr_auc": 0.2516421348571236,
+    "brier_score": 0.06762710516699956,
+    "operating_threshold": 0.16,
+    "precision": 0.23666384419983066,
+    "recall": 0.4503222341568206,
+    "f1_score": 0.31026827012025904,
+    "predicted_positive_rate": 0.15361935525830858,
+    "confusion_matrix": [
+      [
+        36994,
+        5409
+      ],
+      [
+        2047,
+        1677
+      ]
+    ]
+  },
+  "top_feature_importances": [
+    {
+      "feature": "ext_source_mean",
+      "importance": 0.3251989976628805
+    },
+    {
+      "feature": "age_years",
+      "importance": 0.047432255671752716
+    },
+    {
+      "feature": "loan_term_estimated_months",
+      "importance": 0.04426230343003199
+    },
+    {
+      "feature": "credit_to_goods_ratio",
+      "importance": 0.043572685918733325
+    },
+    {
+      "feature": "bureau_credit_history_length_years",
+      "importance": 0.04151190756649828
+    },
+    {
+      "feature": "employment_years",
+      "importance": 0.040228500845230754
+    },
+    {
+      "feature": "bureau_utilization_ratio",
+      "importance": 0.0342249762455611
+    },
+    {
+      "feature": "days_since_last_phone_change",
+      "importance": 0.033346438160235616
+    },
+    {
+      "feature": "prev_app_refusal_rate",
+      "importance": 0.030699794444134707
+    },
+    {
+      "feature": "installment_max_delay_days",
+      "importance": 0.028767100387162976
+    },
+    {
+      "feature": "loan_annuity_emi",
+      "importance": 0.02690172586560233
+    },
+    {
+      "feature": "loan_credit_amount",
+      "importance": 0.026357915167710088
+    },
+    {
+      "feature": "disposable_income_per_capita",
+      "importance": 0.025322921635591734
+    },
+    {
+      "feature": "payment_to_income_ratio",
+      "importance": 0.025176560189807518
+    },
+    {
+      "feature": "credit_to_income_ratio",
+      "importance": 0.024446442641550707
+    }
+  ]
+}

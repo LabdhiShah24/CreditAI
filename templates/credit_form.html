@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Analysis - CreditAI</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .shap-section {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        .shap-card {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .shap-card h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .risk-up h3 { color: #d32f2f; border-color: #ffebee; }
+        .risk-down h3 { color: #2e7d32; border-color: #e8f5e9; }
+        
+        .factor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .factor-item:last-child {
+            border-bottom: none;
+        }
+        .factor-name {
+            font-weight: 500;
+            color: #333;
+        }
+        .factor-val {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="dashboard-navbar">
+        <div class="dashboard-logo">CreditAI</div>
+        <div class="dashboard-nav-links">
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/history/">History</a>
+            <a href="/logout/">Logout</a>
+        </div>
+    </nav>
+
+
+    <!-- Credit Form -->
+    <main class="form-container">
+        <section class="form-header">
+            <p class="small-heading">AI CREDIT ANALYSIS</p>
+            <h1>Check Your Credit Health</h1>
+            <p>Enter your financial information below and let CreditAI analyze your credit profile.</p>
+        </section>
+
+        <form method="POST" class="credit-form">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small style="color: #666; font-size: 0.8rem; display:block; margin-top:0.25rem;">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div style="color: red; font-size: 0.8rem;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="analyze-button">Analyze My Credit</button>
+        </form>
+
+        {% if submitted %}
+        <section class="analysis-result" style="margin-top: 3rem;">
+            <h2>AI Credit Analysis Results 🤖</h2>
+            <div class="result-cards">
+                <div class="result-card">
+                    <h3>CreditAI Risk Score</h3>
+                    <div class="score">{{ application.creditai_score }}</div>
+                    <p>Range 300-900</p>
+                </div>
+
+                <div class="result-card">
+                    <h3>Risk Band</h3>
+                    <div class="risk">{{ application.risk_band }}</div>
+                    <p>Estimated financial risk</p>
+                </div>
+
+                <div class="result-card">
+                    <h3>Calibrated PD</h3>
+                    <div class="health">{{ application.calibrated_pd }}%</div>
+                    <p>Estimated Payment-Difficulty Probability</p>
+                </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #555; text-align: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <em>Note:</em> This represents the calibrated probability of the modeled payment-difficulty outcome from our training data, not a generic CIBIL/FICO default probability.
+            </p>
+            
+            <div style="background-color: #fdfaf2; color: #856404; padding: 1rem; border-radius: 6px; border: 1px solid #ffeeba; margin-bottom: 2rem; font-size: 0.9rem;">
+                <strong>Limited credit-history data:</strong> Some historical/bureau information was unavailable and was handled using the model's trained imputation process. This is not a bureau credit score.
+            </div>
+
+            <div class="shap-section">
+                <!-- Risk Increasing Factors -->
+                <div class="shap-card risk-up">
+                    <h3>Top Factors Increasing Risk</h3>
+                    {% for item in application.shap_explanations.risk_increasing %}
+                    <div class="factor-item">
+                        <div class="factor-name">{{ item.name }}</div>
+                        <div class="factor-val">{{ item.value }}</div>
+                    </div>
+                    {% empty %}
+                    <p style="color:#666;">No major risk-increasing factors identified.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Risk Reducing Factors -->
+                <div class="shap-card risk-down">
+                    <h3>Top Factors Reducing Risk</h3>
+                    {% for item in application.shap_explanations.risk_reducing %}
+                    <div class="factor-item">
+                        <div class="factor-name">{{ item.name }}</div>
+                        <div class="factor-val">{{ item.value }}</div>
+                    </div>
+                    {% empty %}
+                    <p style="color:#666;">No major risk-reducing factors identified.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+</body>
+</html>

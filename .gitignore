@@ -1,0 +1,59 @@
+# Environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+
+# Environment Variables
+.env
+.env.*
+
+# Local/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CreditAI specific datasets
+data/
+
+# Local test / scratch
+scratch/
+
+# Legacy ML Artifacts
+ml/credit_model.pkl
+ml/imputer.pkl
+ml/features.pkl
+ml/train_model.py

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login - CreditAI</title>
+</head>
+
+<body>
+
+    <h1>Login to CreditAI</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Login</button>
+
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="/register/">Register</a>
+    </p>
+
+</body>
+
+</html>
