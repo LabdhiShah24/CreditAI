@@ -1,41 +1,38 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - CreditAI</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <nav class="dashboard-navbar">
-        <div class="dashboard-logo">Credit<span>AI</span></div>
-        <div class="dashboard-nav-links">
-            <a href="/">Home</a>
-            <a href="/register/">Register</a>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    <div class="auth-card" style="width: 100%;">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <h2 style="font-size: 28px; margin-bottom: 8px;">Welcome Back</h2>
+            <p style="margin: 0;">Log in to access your CreditAI dashboard</p>
         </div>
-    </nav>
-    <div class="form-container" style="max-width: 500px;">
-        <div class="auth-form">
-            <h2 style="text-align: center; margin-bottom: 24px;">Welcome Back</h2>
-            <form method="POST">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div style="background: var(--danger-light); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; font-weight: 600;">
+                    {{ form.non_field_errors.0 }}
                 </div>
-                {% endfor %}
-                {% if form.non_field_errors %}
-                    <div style="color: var(--danger); margin-bottom: 16px; font-size: 14px;">
-                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-                    </div>
-                {% endif %}
-                <button type="submit" class="btn" style="width: 100%; margin: 16px 0 0;">Login</button>
-            </form>
-            <p style="text-align: center; margin-top: 24px; font-size: 14px;">
-                Don't have an account? <a href="/register/">Register here</a>
-            </form>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-block" style="margin-top: 16px; padding: 14px;">Log In</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 32px; font-size: 14px; color: var(--text-muted);">
+            Don't have an account? <a href="{% url 'register' %}" style="font-weight: 600;">Create one here</a>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

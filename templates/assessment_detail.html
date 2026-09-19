@@ -1,108 +1,198 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assessment Details - CreditAI</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-
-    <!-- Navigation Bar -->
-    <nav class="dashboard-navbar">
-        <div class="dashboard-logo">Credit<span>AI</span></div>
-        <div class="dashboard-nav-links">
-            <a href="/">Home</a>
-            <a href="/dashboard/">Dashboard</a>
-            <a href="/history/">History</a>
-            <a href="/logout/">Logout</a>
+{% block content %}
+<div class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+        <div>
+            <h1 style="font-size: 32px; margin-bottom: 8px;">Your Credit Assessment</h1>
+            <p style="font-size: 16px; margin: 0;">Analyzed on {{ application.created_at|date:"F j, Y, g:i a" }}</p>
         </div>
-    </nav>
+        <a href="{% url 'history' %}" class="btn btn-secondary">← Back to History</a>
+    </div>
 
-    <main class="analysis-result" style="margin-top: 60px;">
-
-        <div class="result-header">
-            <p class="small-heading">ANALYSIS DETAILS</p>
-            <h2>Assessment from {{ application.created_at|date:"M d, Y" }}</h2>
-        </div>
-
-        <div class="disclaimer-box">
-            <strong>Important:</strong> CreditAI Risk Score is an internal model-derived score and is strictly not a CIBIL, FICO, or other bureau credit score.
-            <br><br>
-            <strong>Limited credit-history data:</strong> Some historical/bureau information was unavailable in this workflow and was handled using the model's trained imputation process.
-        </div>
-
-        <!-- Scores -->
-        <div class="result-cards">
-            <div class="result-card">
-                <h3>CreditAI Score</h3>
-                <div class="score">{{ application.creditai_score }}</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 32px;">
+        <!-- Score Gauge -->
+        <div class="gauge-container">
+            <div style="position: absolute; top: 24px; left: 24px;">
+                <div class="small-heading">Your CreditAI Score</div>
             </div>
-            <div class="result-card">
-                <h3>Risk Band</h3>
-                <div class="score 
-                    {% if application.risk_band == 'High Risk' or application.risk_band == 'Very High Risk' %}risk-high{% endif %}
-                    {% if application.risk_band == 'Medium Risk' %}risk-medium{% endif %}
-                    {% if application.risk_band == 'Low Risk' or application.risk_band == 'Very Low Risk' %}risk-low{% endif %}
-                ">{{ application.risk_band }}</div>
+            <div style="position: absolute; top: 24px; right: 24px;">
+                <span class="badge 
+                    {% if application.risk_band == 'High Risk' or application.risk_band == 'Very High Risk' %}badge-high
+                    {% elif application.risk_band == 'Medium Risk' %}badge-medium
+                    {% else %}badge-low{% endif %}">
+                    {{ application.risk_band }}
+                </span>
             </div>
-            <div class="result-card">
-                <h3>Payment-Difficulty Prob</h3>
-                <div class="probability"><strong>{{ application.calibrated_pd }}%</strong></div>
+            
+            <svg class="gauge-svg" viewBox="0 0 400 220" style="margin-top: 40px;">
+                <!-- Background Arc -->
+                <path class="gauge-track" d="M 40 200 A 160 160 0 0 1 360 200" />
+                
+                <!-- Colored Segments -->
+                <path class="gauge-danger" d="M 40 200 A 160 160 0 0 1 86.87 86.87" />
+                <path class="gauge-warning" style="stroke: #f97316;" d="M 86.87 86.87 A 160 160 0 0 1 158.56 45.42" />
+                <path class="gauge-warning" d="M 158.56 45.42 A 160 160 0 0 1 241.44 45.42" />
+                <path class="gauge-success" style="stroke: #84cc16;" d="M 241.44 45.42 A 160 160 0 0 1 313.13 86.87" />
+                <path class="gauge-success" d="M 313.13 86.87 A 160 160 0 0 1 360 200" />
+                
+                <!-- Min/Max Labels -->
+                <text x="40" y="215" class="gauge-minmax" text-anchor="middle">300</text>
+                <text x="360" y="215" class="gauge-minmax" text-anchor="middle">900</text>
+                
+                <!-- Needle -->
+                <g id="gauge-needle-group-{{ application.pk }}" class="gauge-needle" style="transform: rotate(-90deg);">
+                    <polygon points="190,195 210,195 200,60" />
+                    <circle cx="200" cy="195" r="12" class="gauge-needle-center" />
+                </g>
+                
+                <!-- Value text -->
+                <text x="200" y="170" class="gauge-value" id="score-text-{{ application.pk }}">0</text>
+            </svg>
+        </div>
+        
+        <!-- Payment Risk -->
+        <div class="info-card" style="justify-content: center; align-items: center; text-align: center; padding: 48px 24px;">
+            <div class="info-card-icon icon-purple" style="width: 56px; height: 56px; font-size: 24px; margin-bottom: 24px;">
+                🛡️
+            </div>
+            <div class="info-card-title">Payment Risk</div>
+            <div class="info-card-value" style="font-size: 48px; margin-bottom: 8px;">{{ application.calibrated_pd }}%</div>
+            <p style="margin: 0; font-size: 14px;">Estimated payment-difficulty probability</p>
+            <p style="font-size: 12px; margin-top: 16px; color: var(--text-light);">
+                Based on historical data calibration
+            </p>
+        </div>
+    </div>
+
+    <!-- Your Credit Details -->
+    <div class="small-heading" style="margin-top: 48px;">Your Credit Details</div>
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Age</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">{{ application.age_years }} years</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Education</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">{{ application.education_level }}</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Family Members</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">{{ application.family_member_count }} members</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Employment</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">{{ application.employment_years }} years</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Monthly Income</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">₹{{ application.income_monthly|floatformat:0 }} ({{ application.income_type }})</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Loan Amount</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">₹{{ application.loan_credit_amount|floatformat:0 }}</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Monthly EMI</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">₹{{ application.loan_annuity_emi|floatformat:0 }}</div>
+        </div>
+        {% if application.goods_price %}
+        <div class="info-card">
+            <div class="info-card-title" style="margin-bottom: 8px;">Goods Price</div>
+            <div style="font-weight: 600; font-size: 16px; color: var(--navy-dark);">₹{{ application.goods_price|floatformat:0 }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Risk Factors -->
+    <div class="small-heading" style="margin-top: 48px;">Your Risk Factors</div>
+    <p style="margin-bottom: 24px;">These factors had the strongest influence on your CreditAI assessment.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        <!-- Higher Modeled Risk -->
+        <div class="factor-card">
+            <div class="factor-group">
+                <h3 style="color: var(--danger);"><span class="factor-icon-danger">↑</span> Higher Modeled Risk</h3>
+                {% if application.shap_explanations.risk_increasing %}
+                    {% for factor in application.shap_explanations.risk_increasing %}
+                        <div class="factor-item">
+                            <span class="factor-name">{{ factor.name }}</span>
+                            <span class="factor-val">{{ factor.value }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="font-size: 14px; margin-top: 16px;">No significant increasing risk factors identified.</p>
+                {% endif %}
             </div>
         </div>
-
-        <!-- Profile Inputs -->
-        <div class="profile-section">
-            <h3>Applicant Profile Submitted</h3>
-            <div class="profile-grid">
-                <div class="profile-item"><span class="label">Age</span><span class="value">{{ application.age_years }} years</span></div>
-                <div class="profile-item"><span class="label">Education</span><span class="value">{{ application.education_level }}</span></div>
-                <div class="profile-item"><span class="label">Family Members</span><span class="value">{{ application.family_member_count }}</span></div>
-                <div class="profile-item"><span class="label">Employment</span><span class="value">{{ application.employment_years }} years</span></div>
-                <div class="profile-item"><span class="label">Income Type</span><span class="value">{{ application.income_type }}</span></div>
-                <div class="profile-item"><span class="label">Monthly Income</span><span class="value">&#8377;{{ application.income_monthly }}</span></div>
-                <div class="profile-item"><span class="label">Loan Amount</span><span class="value">&#8377;{{ application.loan_credit_amount }}</span></div>
-                <div class="profile-item"><span class="label">Monthly EMI</span><span class="value">&#8377;{{ application.loan_annuity_emi }}</span></div>
-                <div class="profile-item"><span class="label">Goods Price</span><span class="value">&#8377;{{ application.goods_price }}</span></div>
+        
+        <!-- Lower Modeled Risk -->
+        <div class="factor-card">
+            <div class="factor-group">
+                <h3 style="color: var(--success);"><span class="factor-icon-success">↓</span> Lower Modeled Risk</h3>
+                {% if application.shap_explanations.risk_reducing %}
+                    {% for factor in application.shap_explanations.risk_reducing %}
+                        <div class="factor-item">
+                            <span class="factor-name">{{ factor.name }}</span>
+                            <span class="factor-val">{{ factor.value }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="font-size: 14px; margin-top: 16px;">No significant reducing risk factors identified.</p>
+                {% endif %}
             </div>
         </div>
+    </div>
 
-        <!-- SHAP Values -->
-        <div class="profile-section" style="margin-top: 32px;">
-            <h3>AI Model Explanations (SHAP)</h3>
-            <p style="margin-bottom: 24px;">The following factors had the strongest mathematical association with the calculated risk score in the model.</p>
-            <div class="shap-grid">
-                <div class="shap-card danger">
-                    <h4 style="color: var(--danger); margin-bottom: 16px;">Top Factors Increasing Risk</h4>
-                    <ul>
-                        {% for factor in application.shap_explanations.increasing_risk %}
-                            <li>{{ factor }}</li>
-                        {% empty %}
-                            <li>None identified</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="shap-card success">
-                    <h4 style="color: var(--success); margin-bottom: 16px;">Top Factors Reducing Risk</h4>
-                    <ul>
-                        {% for factor in application.shap_explanations.reducing_risk %}
-                            <li>{{ factor }}</li>
-                        {% empty %}
-                            <li>None identified</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <!-- Limited Data Notice -->
+    <div style="margin-top: 48px; background: var(--warning-light); border: 1px solid #fcd34d; border-radius: var(--radius-md); padding: 24px; color: #92400e;">
+        <h3 style="font-size: 16px; margin-bottom: 8px; color: #92400e; display: flex; align-items: center; gap: 8px;">
+            ⚠️ Notice
+        </h3>
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #92400e;">
+            Some historical credit information was unavailable for this assessment and was handled using the model's trained imputation process. 
+            <strong>Note:</strong> The CreditAI Risk Score is a proprietary assessment produced by our internal model. It is <strong>NOT</strong> a CIBIL, Equifax, Experian, CRIF High Mark, or FICO score, and does not impact your official bureau reports.
+        </p>
+    </div>
 
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="/history/" class="btn btn-secondary">Back to History</a>
-        </div>
+</div>
+{% endblock %}
 
-    </main>
-
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const score = {{ application.creditai_score|default:0 }};
+        const minScore = 300;
+        const maxScore = 900;
+        
+        let rotation = -90;
+        if (score >= minScore && score <= maxScore) {
+            const percentage = (score - minScore) / (maxScore - minScore);
+            rotation = -90 + (percentage * 180);
+        } else if (score > maxScore) {
+            rotation = 90;
+        }
+        
+        setTimeout(() => {
+            document.getElementById('gauge-needle-group-{{ application.pk }}').style.transform = `rotate(${rotation}deg)`;
+            
+            let current = minScore;
+            const target = score;
+            const duration = 1500;
+            const stepTime = Math.abs(Math.floor(duration / (target - minScore)));
+            
+            if (target > minScore) {
+                const timer = setInterval(() => {
+                    current += Math.ceil((target - current) / 10) || 1;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    document.getElementById('score-text-{{ application.pk }}').textContent = current;
+                }, 20);
+            }
+        }, 100);
+    });
+</script>
+{% endblock %}

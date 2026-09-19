@@ -1,30 +1,95 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreditAI - AI Credit Risk Engine</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
 
-    <nav class="dashboard-navbar">
-        <div class="dashboard-logo">Credit<span>AI</span></div>
-        <div class="dashboard-nav-links">
-            <a href="/login/">Login</a>
-            <a href="/register/">Register</a>
+{% block content %}
+<div class="container" style="padding-top: 60px; min-height: calc(100vh - 100px); display: flex; flex-direction: column; justify-content: center;">
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+        
+        <!-- Left Side: Hero Text -->
+        <div>
+            <h1 style="font-size: 56px; margin-bottom: 24px; letter-spacing: -1px; line-height: 1.1;">
+                Understand your credit.<br>
+                <span style="color: var(--primary);">Make smarter financial decisions.</span>
+            </h1>
+            <p style="font-size: 20px; max-width: 500px; margin-bottom: 40px; color: var(--text-muted); line-height: 1.6;">
+                An AI-powered credit risk assessment system that evaluates financial profiles and provides transparent, explainable insights.
+            </p>
+            <div style="display: flex; gap: 16px;">
+                <a href="{% url 'register' %}" class="btn" style="padding: 16px 32px; font-size: 16px;">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-secondary" style="padding: 16px 32px; font-size: 16px;">Log In</a>
+            </div>
         </div>
-    </nav>
 
-    <div class="container" style="padding-top: 100px;">
-        <h1 style="font-size: 56px; margin-bottom: 24px;">AI-Powered Credit Risk</h1>
-        <p style="font-size: 20px; max-width: 700px; margin: 0 auto 40px;">
-            A sophisticated V1 machine learning engine trained to assess credit risk 
-            and output explainable, transparent factors.
-        </p>
-        <a href="/login/" class="btn" style="font-size: 18px; padding: 16px 40px;">Get Started</a>
+        <!-- Right Side: SVG App Visualization -->
+        <div style="position: relative; display: flex; justify-content: center;">
+            <!-- Faux Mobile Phone Frame -->
+            <div style="width: 320px; height: 580px; background: white; border-radius: 40px; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15); border: 8px solid #f1f5f9; position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 24px;">
+                
+                <div style="text-align: center; margin-bottom: 32px; margin-top: 16px;">
+                    <div style="font-size: 14px; font-weight: 700; color: var(--navy-dark);">Credit<span style="color: var(--primary);">AI</span> Score</div>
+                </div>
+                
+                <!-- Tiny Gauge -->
+                <div style="position: relative; height: 140px; display: flex; justify-content: center;">
+                    <svg viewBox="0 0 200 100" style="width: 200px; overflow: visible;">
+                        <!-- Track -->
+                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+                        <!-- Green Arc for Very Low Risk (~794 score) -->
+                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--success)" stroke-width="12" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="40"/>
+                        
+                        <text x="100" y="80" font-size="32" font-weight="800" fill="var(--navy-dark)" text-anchor="middle">794</text>
+                        <text x="100" y="100" font-size="10" font-weight="700" fill="var(--success)" text-anchor="middle">VERY LOW RISK</text>
+                    </svg>
+                </div>
+                
+                <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Payment Risk</div>
+                    <div style="font-size: 20px; font-weight: 700; color: var(--navy-dark);">1.17%</div>
+                </div>
+                
+                <div style="display: flex; gap: 8px;">
+                    <div style="flex: 1; background: #e0f2fe; padding: 12px; border-radius: 12px;">
+                        <div style="font-size: 10px; color: #0284c7; font-weight: 700;">INCOME</div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--navy-dark);">₹50K</div>
+                    </div>
+                    <div style="flex: 1; background: #ffedd5; padding: 12px; border-radius: 12px;">
+                        <div style="font-size: 10px; color: #ea580c; font-weight: 700;">LOAN</div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--navy-dark);">₹200K</div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Floating Accents -->
+            <div style="position: absolute; top: 80px; right: -40px; background: white; padding: 12px 20px; border-radius: 16px; box-shadow: var(--shadow-lg); font-weight: 700; color: var(--success); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
+                ✅ Explainable
+            </div>
+            <div style="position: absolute; bottom: 80px; left: -60px; background: white; padding: 12px 20px; border-radius: 16px; box-shadow: var(--shadow-lg); font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
+                🧠 AI Assistant
+            </div>
+
+        </div>
+
     </div>
+    
+</div>
 
-</body>
-</html>
+<style>
+    @media (max-width: 900px) {
+        .container > div {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        .container h1 {
+            font-size: 40px !important;
+        }
+        .container p {
+            margin: 0 auto 40px !important;
+        }
+        .container > div > div:first-child > div {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}

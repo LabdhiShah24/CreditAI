@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 600px;">
+    
+    <div style="margin-bottom: 40px;">
+        <h1 style="font-size: 32px; margin-bottom: 8px;">My Profile</h1>
+        <p style="font-size: 16px;">Manage your CreditAI account details.</p>
+    </div>
+
+    <div style="background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 32px; margin-bottom: 32px;">
+        
+        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 32px;">
+            <div style="width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 40px; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 700;">
+                {% if user.first_name %}
+                    {{ user.first_name|first|upper }}
+                {% else %}
+                    {{ user.username|first|upper }}
+                {% endif %}
+            </div>
+            <div>
+                <h2 style="font-size: 24px; margin-bottom: 4px;">
+                    {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                </h2>
+                <div style="color: var(--text-muted); font-size: 14px;">Member since {{ user.date_joined|date:"F Y" }}</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 16px;">
+            <div style="color: var(--text-muted); font-size: 14px; font-weight: 600;">Username</div>
+            <div style="color: var(--navy-dark); font-size: 14px; font-weight: 600;">{{ user.username }}</div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px;">
+            <div style="color: var(--text-muted); font-size: 14px; font-weight: 600;">Email</div>
+            <div style="color: var(--navy-dark); font-size: 14px; font-weight: 600;">
+                {% if user.email %}
+                    {{ user.email }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    {% if latest %}
+    <div class="small-heading" style="margin-bottom: 16px;">Latest Assessment Summary</div>
+    <div style="background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <div style="font-size: 28px; font-weight: 800; color: var(--navy-dark); margin-bottom: 4px;">{{ latest.creditai_score }}</div>
+            <div style="font-size: 13px; color: var(--text-muted);">Last analyzed {{ latest.created_at|date:"M d, Y" }}</div>
+        </div>
+        <div style="text-align: right;">
+            <span class="badge 
+                {% if latest.risk_band == 'High Risk' or latest.risk_band == 'Very High Risk' %}badge-high
+                {% elif latest.risk_band == 'Medium Risk' %}badge-medium
+                {% else %}badge-low{% endif %}" style="margin-bottom: 8px;">
+                {{ latest.risk_band }}
+            </span>
+            <div style="font-size: 13px; color: var(--navy-dark); font-weight: 600;">{{ latest.calibrated_pd }}% Risk</div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
