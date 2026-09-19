@@ -1,526 +1,518 @@
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px 80px;
-    background:white;
-    box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+/* =========================================
+   CREDITAI FINTECH REDESIGN - style.css
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #635bff;
+    --primary-hover: #4e44e7;
+    --bg-color: #f6f9fc;
+    --text-main: #32325d;
+    --text-muted: #6b7c93;
+    --card-bg: #ffffff;
+    --border-color: #e6ebf1;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --navy: #0a2540;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
 }
 
-.logo{
-    color:#2563eb;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
 }
 
-.navbar a{
-    margin-left:25px;
-    text-decoration:none;
-    color:#333;
-    font-weight:bold;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--navy);
+    margin-top: 0;
+    line-height: 1.3;
 }
 
-.navbar a:hover{
-    color:#2563eb;
+p {
+    color: var(--text-muted);
 }
 
-body{
-    margin:0;
-    padding:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#f5f7fb;
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.container{
-    width:80%;
-    margin:auto;
-    text-align:center;
-    padding-top:80px;
-}
-
-h1{
-    color:#1e3a8a;
-    font-size:55px;
-}
-
-h2{
-    color:#2563eb;
-}
-
-p{
-    font-size:20px;
-    color:#555;
-}
-
-.btn{
-    display:inline-block;
-    margin:20px;
-    padding:15px 35px;
-    text-decoration:none;
-    background:#2563eb;
-    color:white;
-    border-radius:10px;
-    font-size:18px;
-}
-
-.btn:hover{
-    background:#1d4ed8;
+a:hover {
+    color: var(--primary-hover);
 }
 
 /* =========================================
-   CREDITAI DASHBOARD
+   NAVIGATION
    ========================================= */
 
-.dashboard-navbar {
-    background: red;
+.dashboard-navbar, .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 70px;
-    background: white;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 16px 5%;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.dashboard-logo {
-    font-size: 28px;
+.dashboard-logo, .logo {
+    font-size: 24px;
     font-weight: 700;
-    color: #2563eb;
+    color: var(--navy);
+    letter-spacing: -0.5px;
 }
 
-.dashboard-nav-links {
+.dashboard-logo span, .logo span {
+    color: var(--primary);
+}
+
+.dashboard-nav-links, .navbar-links {
     display: flex;
-    gap: 30px;
+    gap: 32px;
+    align-items: center;
 }
 
-.dashboard-nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 600;
-}
-
-.dashboard-nav-links a:hover {
-    color: #2563eb;
-}
-
-
-/* Main Dashboard */
-
-.dashboard-container {
-    width: 85%;
-    max-width: 1200px;
-    margin: auto;
-    padding: 55px 0;
-}
-
-
-/* Welcome */
-
-.welcome-section {
-    margin-bottom: 45px;
-}
-
-.small-heading {
-    color: #2563eb;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-}
-
-.welcome-section h1 {
-    font-size: 42px;
-    color: #1e3a8a;
-    margin: 0 0 15px 0;
-}
-
-.welcome-text {
-    font-size: 18px;
-    color: #666;
-}
-
-
-/* Summary Cards */
-
-.summary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-bottom: 45px;
-}
-
-.dashboard-card {
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
-
-.card-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.score-number {
-    font-size: 42px;
-    font-weight: 700;
-    color: #2563eb;
-    margin-bottom: 10px;
-}
-
-.risk-status {
-    font-size: 25px;
-    font-weight: 700;
-    color: #f59e0b;
-    margin-bottom: 10px;
-}
-
-.health-status {
-    font-size: 25px;
-    font-weight: 700;
-    color: #16a34a;
-    margin-bottom: 10px;
-}
-
-.card-description {
-    color: #777;
+.dashboard-nav-links a, .navbar-links a {
+    color: var(--text-muted);
+    font-weight: 500;
     font-size: 15px;
 }
 
+.dashboard-nav-links a:hover, .navbar-links a:hover {
+    color: var(--navy);
+}
 
-/* AI Prediction Section */
+/* Buttons */
+.btn, .dashboard-button, .analyze-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.btn:hover, .dashboard-button:hover, .analyze-button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+    color: var(--navy);
+}
+
+/* =========================================
+   LAYOUT CONTAINERS
+   ========================================= */
+
+.container, .dashboard-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 0;
+}
+
+/* =========================================
+   DASHBOARD
+   ========================================= */
+
+.welcome-section {
+    margin-bottom: 40px;
+}
+
+.small-heading {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.welcome-section h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.dashboard-card {
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.score-number, .risk-status, .health-status {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+/* Semantic Risk Colors */
+.risk-high { color: var(--danger) !important; }
+.risk-medium { color: var(--warning) !important; }
+.risk-low { color: var(--success) !important; }
+.risk-default { color: var(--text-muted) !important; }
+
+.dashboard-probability {
+    background: var(--card-bg);
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prob-info h3 { margin-bottom: 8px; font-size: 20px;}
+.prob-info p { margin-bottom: 0; font-size: 14px; }
+.prob-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--primary);
+}
 
 .prediction-section {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    padding: 45px;
-    border-radius: 20px;
-    color: white;
-    margin-bottom: 45px;
-}
-
-.prediction-section .small-heading {
-    color: #bfdbfe;
-}
-
-.prediction-content h2 {
-    font-size: 32px;
-    margin: 10px 0 15px;
-}
-
-.prediction-content p {
-    font-size: 17px;
-    line-height: 1.6;
-    max-width: 700px;
-}
-
-
-/* Dashboard Button */
-
-.dashboard-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: white;
-    color: #2563eb;
-    text-decoration: none;
-    border-radius: 10px;
-    font-weight: 700;
-    transition: 0.2s ease;
-}
-
-.dashboard-button:hover {
-    background: #eff6ff;
-    transform: translateY(-2px);
-}
-
-
-/* Information Cards */
-
-.info-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-}
-
-.info-card {
-    background: white;
-    padding: 30px;
+    background: var(--navy);
+    padding: 48px;
     border-radius: 16px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
-
-.info-card h3 {
-    color: #1e3a8a;
-    margin-top: 0;
-}
-
-.info-card p {
-    color: #666;
-    line-height: 1.7;
-}
-
-
-/* Responsive Design */
-
-@media (max-width: 800px) {
-
-    .dashboard-navbar {
-        padding: 20px 30px;
-    }
-
-    .summary-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .info-section {
-        grid-template-columns: 1fr;
-    }
-
-    .dashboard-container {
-        width: 90%;
-    }
-
-    .welcome-section h1 {
-        font-size: 32px;
-    }
-}
-
-/* Fix text visibility inside AI Credit Analysis */
-
-.prediction-section h2 {
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 40px;
 }
 
-.prediction-section p {
-    color: #e0e7ff;
-}
+.prediction-section h2 { color: white; font-size: 32px; margin-bottom: 16px; }
+.prediction-section p { color: #a0aec0; font-size: 18px; max-width: 600px; margin-bottom: 24px; }
 
-.prediction-section .small-heading {
-    color: #bfdbfe;
-}
-
-/* ============================= */
-/* Credit Analysis Form */
-/* ============================= */
+/* =========================================
+   FORMS (Credit Form / Login / Register)
+   ========================================= */
 
 .form-container {
-    width: 80%;
-    max-width: 1000px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 70px 0;
+    padding: 60px 0;
 }
 
-.form-header {
-    text-align: center;
-    margin-bottom: 45px;
+.credit-form, .auth-form {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
 }
-
-.form-header h1 {
-    color: #1e3a8a;
-    font-size: 42px;
-    margin: 10px 0 15px;
-}
-
-.form-header p {
-    color: #666;
-    font-size: 17px;
-}
-
-.form-header .small-heading {
-    color: #2563eb;
-    font-weight: 700;
-    letter-spacing: 3px;
-    font-size: 14px;
-}
-
-
-.credit-form {
-    background: white;
-    padding: 45px;
-    border-radius: 20px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
-}
-
 
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 25px;
+    gap: 24px;
 }
-
 
 .form-group {
     display: flex;
     flex-direction: column;
-}
-
-
-.form-group label {
-    color: #333;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 9px;
-}
-
-
-.form-group input {
-    padding: 14px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    font-size: 16px;
-    outline: none;
-}
-
-
-.form-group input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-
-.analyze-button {
-    display: block;
-    margin: 35px auto 0;
-    padding: 15px 35px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-
-.analyze-button:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px);
-}
-
-.analysis-result {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 30px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.analysis-result h2 {
-    color: #2563eb;
     margin-bottom: 20px;
 }
 
-.analysis-result p {
-    font-size: 17px;
-    color: #444;
-    margin: 10px 0;
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
 }
 
-/* ============================= */
-/* AI ANALYSIS RESULT */
-/* ============================= */
+.form-group input, .form-group select {
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.15);
+}
+
+.form-group .helptext {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+/* =========================================
+   RESULTS & ASSESSMENT DETAILS
+   ========================================= */
 
 .analysis-result {
-    width: 90%;
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 40px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.analysis-result h2 {
+.result-header {
     text-align: center;
-    color: #2450a4;
-    font-size: 32px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
+
+.result-header h2 { font-size: 32px; }
 
 .result-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 24px;
+    margin-bottom: 32px;
 }
 
 .result-card {
-    padding: 25px;
-    background: #f7f9fc;
-    border-radius: 15px;
+    background: var(--card-bg);
+    padding: 32px 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     text-align: center;
 }
 
 .result-card h3 {
-    color: #333;
-    margin-bottom: 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
 }
 
-.result-card p {
-    color: #666;
+.score { font-size: 48px; font-weight: 700; color: var(--navy); line-height: 1; }
+.probability strong { font-size: 48px; color: var(--primary); font-weight: 700; line-height: 1;}
+
+.disclaimer-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    color: #92400e;
+    font-size: 14px;
 }
 
-.score {
-    font-size: 42px;
-    font-weight: 700;
-    color: #2563eb;
+/* Grid Profiles */
+.profile-section {
+    background: var(--card-bg);
+    padding: 32px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 32px;
 }
 
-.risk {
-    font-size: 28px;
-    font-weight: 700;
-    color: #f59e0b;
+.profile-section h3 {
+    margin-bottom: 24px;
+    font-size: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
 }
 
-.health {
-    font-size: 28px;
-    font-weight: 700;
-    color: #16a34a;
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
 }
 
-.probability {
-    margin-top: 30px;
-    padding: 25px;
-    background: #f7f9fc;
-    border-radius: 15px;
-    text-align: center;
+.profile-item {
+    display: flex;
+    flex-direction: column;
 }
 
-.probability h3 {
-    color: #333;
+.profile-item .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
 }
 
-.probability strong {
-    font-size: 35px;
-    color: #2450a4;
+.profile-item .value {
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 500;
 }
 
-.dashboard-probability {
-    margin-top: 30px;
-    padding: 30px;
-    background: white;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+/* SHAP Factors */
+.shap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
 }
 
-.dashboard-probability h3 {
-    color: #333;
-    margin-bottom: 15px;
+.shap-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
 }
 
-.dashboard-probability div {
-    font-size: 38px;
-    font-weight: 700;
-    color: #2450a4;
+.shap-card.danger { border-top: 4px solid var(--danger); }
+.shap-card.success { border-top: 4px solid var(--success); }
+
+.shap-card ul {
+    padding-left: 20px;
+    margin: 0;
 }
 
-.dashboard-probability p {
-    color: #666;
+.shap-card li {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: var(--text-main);
+}
+
+/* =========================================
+   HISTORY TABLE
+   ========================================= */
+
+.history-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th, .history-table td {
+    padding: 16px 24px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-table th {
+    background: #f8fafc;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.history-table td {
+    font-size: 15px;
+    color: var(--navy);
+    font-weight: 500;
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.history-table tr:hover {
+    background-color: #f8fafc;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-low { background: #dcfce7; color: #166534; }
+.badge-medium { background: #fef3c7; color: #92400e; }
+.badge-high { background: #fee2e2; color: #991b1b; }
+.badge-default { background: #f1f5f9; color: #475569; }
+
+.action-link {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-grid, .shap-grid, .result-cards {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-probability {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    .history-table th, .history-table td {
+        padding: 12px;
+    }
 }

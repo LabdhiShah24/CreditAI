@@ -1,49 +1,30 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>CreditAI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditAI - AI Credit Risk Engine</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 <body>
 
-<nav class="navbar">
+    <nav class="dashboard-navbar">
+        <div class="dashboard-logo">Credit<span>AI</span></div>
+        <div class="dashboard-nav-links">
+            <a href="/login/">Login</a>
+            <a href="/register/">Register</a>
+        </div>
+    </nav>
 
-    <h2 class="logo">CreditAI</h2>
-
-    <div>
-
-        <a href="#">Home</a>
-
-        <a href="#">About</a>
-
-        <a href="/login/">Login</a>
-
-        <a href="/register/">Register</a>
-
+    <div class="container" style="padding-top: 100px;">
+        <h1 style="font-size: 56px; margin-bottom: 24px;">AI-Powered Credit Risk</h1>
+        <p style="font-size: 20px; max-width: 700px; margin: 0 auto 40px;">
+            A sophisticated V1 machine learning engine trained to assess credit risk 
+            and output explainable, transparent factors.
+        </p>
+        <a href="/login/" class="btn" style="font-size: 18px; padding: 16px 40px;">Get Started</a>
     </div>
 
-</nav>
-
-<div class="container">
-
-<h1>CreditAI</h1>
-
-<h2>AI Powered Credit Scoring Platform</h2>
-
-<p>
-Predict your credit score using Machine Learning and receive personalized financial insights.
-</p>
-
-<a href="#" class="btn">Get Started</a>
-
-<a href="#" class="btn">Login</a>
-
-</div>
-
 </body>
-
 </html>

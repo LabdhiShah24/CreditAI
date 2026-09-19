@@ -7,106 +7,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assessment History - CreditAI</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .history-table th, .history-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .history-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-        }
-        .history-table tr:hover {
-            background-color: #fcfcfc;
-        }
-        .action-link {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            background-color: #0052cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        .action-link:hover {
-            background-color: #0043a8;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-top: 2rem;
-        }
-    </style>
 </head>
 <body>
 
     <!-- Navigation Bar -->
     <nav class="dashboard-navbar">
-        <div class="dashboard-logo">CreditAI</div>
+        <div class="dashboard-logo">Credit<span>AI</span></div>
         <div class="dashboard-nav-links">
+            <a href="/">Home</a>
             <a href="/dashboard/">Dashboard</a>
             <a href="/history/">History</a>
             <a href="/logout/">Logout</a>
         </div>
     </nav>
 
-    <main class="dashboard-container">
-        <section class="welcome-section" style="margin-bottom: 2rem;">
-            <div>
-                <p class="small-heading">YOUR RECORDS</p>
-                <h1>Assessment History</h1>
-                <p class="welcome-text">Review your past CreditAI assessments and track your financial health over time.</p>
-            </div>
-        </section>
-
-        {% if assessments %}
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Score</th>
-                    <th>Risk Band</th>
-                    <th>Estimated PD</th>
-                    <th>Loan Amount</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for app in assessments %}
-                <tr>
-                    <td>{{ app.created_at|date:"M d, Y, h:i A" }}</td>
-                    <td><strong>{{ app.creditai_score }}</strong></td>
-                    <td>{{ app.risk_band }}</td>
-                    <td>{{ app.calibrated_pd }}%</td>
-                    <td>₹{{ app.loan_credit_amount|floatformat:0 }}</td>
-                    <td>
-                        <a href="{% url 'assessment_detail' app.pk %}" class="action-link">View Details</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="empty-state">
-            <h2 style="margin-bottom: 1rem; color: #333;">No credit assessments yet.</h2>
-            <p style="color: #666; margin-bottom: 2rem;">Analyze your credit to get started and view your history here.</p>
-            <a href="{% url 'credit_form' %}" class="dashboard-button">Analyze My Credit</a>
+    <main class="container">
+        
+        <div style="margin-bottom: 40px; text-align: left;">
+            <p class="small-heading">Past Assessments</p>
+            <h1>Your Credit History</h1>
+            <p>Review your previous CreditAI predictions and drill down into the SHAP risk explanations.</p>
         </div>
-        {% endif %}
+
+        <div class="history-container">
+            {% if applications %}
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Loan Amount</th>
+                        <th>Score</th>
+                        <th>Risk Band</th>
+                        <th>Prob (PD)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ app.created_at|date:"M d, Y, h:i A" }}</td>
+                        <td>&#8377;{{ app.loan_credit_amount }}</td>
+                        <td style="font-weight: 700;">{{ app.creditai_score }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if app.risk_band == 'High Risk' or app.risk_band == 'Very High Risk' %}badge-high{% endif %}
+                                {% if app.risk_band == 'Medium Risk' %}badge-medium{% endif %}
+                                {% if app.risk_band == 'Low Risk' or app.risk_band == 'Very Low Risk' %}badge-low{% endif %}
+                            ">{{ app.risk_band }}</span>
+                        </td>
+                        <td>{{ app.calibrated_pd }}%</td>
+                        <td>
+                            <a href="/history/{{ app.id }}/" class="action-link">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding: 60px; text-align: center;">
+                <h3 style="color: var(--text-muted);">No Assessments Found</h3>
+                <p>You haven't run any credit analyses yet.</p>
+                <a href="/credit-form/" class="btn" style="margin-top: 16px;">Run First Analysis</a>
+            </div>
+            {% endif %}
+        </div>
 
     </main>
 

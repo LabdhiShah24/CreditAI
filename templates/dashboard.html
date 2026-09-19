@@ -6,9 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Dashboard - CreditAI</title>
-
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
@@ -16,7 +14,7 @@
 
     <!-- Navigation Bar -->
     <nav class="dashboard-navbar">
-        <div class="dashboard-logo">CreditAI</div>
+        <div class="dashboard-logo">Credit<span>AI</span></div>
         <div class="dashboard-nav-links">
             <a href="/">Home</a>
             <a href="/history/">History</a>
@@ -30,20 +28,42 @@
 
         <!-- Welcome Section -->
         <section class="welcome-section">
-            <div>
-                <p class="small-heading">CREDIT HEALTH DASHBOARD</p>
-                <h1>Welcome back, {{ user.username }} 👋</h1>
-                <p class="welcome-text">Here's an overview of your financial health. Let's understand your credit better.</p>
-            </div>
+            <p class="small-heading">Credit Health Dashboard</p>
+            <h1>Welcome back, {{ user.username }} 👋</h1>
+            <p class="welcome-text">Here's an overview of your financial health. Let's understand your credit better.</p>
         </section>
 
 
+        <!-- Model Performance Section -->
+        <div style="margin-bottom: 48px;">
+            <p class="small-heading">Model Performance</p>
+            <div class="summary-cards" style="margin-bottom: 16px;">
+                <div class="dashboard-card">
+                    <div class="card-title">Test ROC-AUC</div>
+                    <div class="score-number" style="font-size: 32px;">76.49%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-title">Test PR-AUC</div>
+                    <div class="score-number" style="font-size: 32px;">25.16%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-title">Test Brier Score</div>
+                    <div class="score-number" style="font-size: 32px;">0.0676</div>
+                </div>
+            </div>
+            <p style="font-size: 14px; color: var(--text-muted); max-width: 800px;">
+                These metrics summarize the model's evaluation on the Home Credit test dataset. They describe model performance on that evaluation data and are not a guarantee of performance on future or real-world applicants.
+            </p>
+        </div>
+
+
         <!-- Credit Summary Cards -->
+        <p class="small-heading">Current Applicant</p>
         <section class="summary-cards">
 
             <!-- Credit Score -->
-            <div class="dashboard-card score-card">
-                <div class="card-title"><span>CreditAI Score</span></div>
+            <div class="dashboard-card">
+                <div class="card-title">CreditAI Score</div>
                 <div class="score-number">
                     {% if latest %}
                         {{ latest.creditai_score }}
@@ -51,69 +71,60 @@
                         ---
                     {% endif %}
                 </div>
-                <p class="card-description">Your AI-powered risk score</p>
+                <p>Your AI-powered risk score</p>
             </div>
-
 
             <!-- Risk Level -->
             <div class="dashboard-card">
-                <div class="card-title"><span>Risk Band</span></div>
-                <div class="risk-status">
+                <div class="card-title">Risk Band</div>
+                <div class="risk-status 
+                    {% if latest %}
+                        {% if latest.risk_band == 'High Risk' or latest.risk_band == 'Very High Risk' %}risk-high{% endif %}
+                        {% if latest.risk_band == 'Medium Risk' %}risk-medium{% endif %}
+                        {% if latest.risk_band == 'Low Risk' or latest.risk_band == 'Very Low Risk' %}risk-low{% endif %}
+                    {% else %}
+                        risk-default
+                    {% endif %}
+                ">
                     {% if latest %}
                         {{ latest.risk_band }}
                     {% else %}
                         Not Calculated
                     {% endif %}
                 </div>
-                <p class="card-description">Your financial risk assessment</p>
+                <p>Your financial risk assessment</p>
             </div>
-
 
             <!-- History -->
             <div class="dashboard-card">
-                <div class="card-title"><span>Total Applications</span></div>
-                <div class="health-status">
+                <div class="card-title">Total Applications</div>
+                <div class="health-status" style="color: var(--primary);">
                     {{ applications|length }}
                 </div>
-                <p class="card-description">Applications submitted</p>
+                <p>Applications submitted</p>
             </div>
 
         </section>
 
         {% if latest %}
         <div class="dashboard-probability">
-            <h3>Estimated Payment-Difficulty Probability</h3>
-            <div>{{ latest.calibrated_pd }}%</div>
-            <p>Calibrated probability of the modeled outcome from training data.</p>
-            <br>
-            <p style="font-size: 0.9rem; color: #555;">
-                <em>Last analyzed on {{ latest.created_at|date:"M d, Y" }}</em>
-            </p>
+            <div class="prob-info">
+                <h3>Estimated Payment-Difficulty Probability</h3>
+                <p>Calibrated probability of the modeled outcome from training data.</p>
+                <p style="margin-top: 12px; color: var(--text-muted);">
+                    <em>Last analyzed on {{ latest.created_at|date:"M d, Y" }}</em>
+                </p>
+            </div>
+            <div class="prob-value">{{ latest.calibrated_pd }}%</div>
         </div>
         {% endif %}
 
 
         <!-- Credit Prediction Section -->
         <section class="prediction-section">
-            <div class="prediction-content">
-                <p class="small-heading">AI CREDIT ANALYSIS</p>
-                <h2>Check Your Credit Health</h2>
-                <p>Enter your financial information and let our V1 machine learning model estimate your credit score and explain the driving factors.</p>
-                <a href="/credit-form/" class="dashboard-button">Check My Credit Score</a>
-            </div>
-        </section>
-
-
-        <!-- Information Section -->
-        <section class="info-section">
-            <div class="info-card">
-                <h3>What will CreditAI analyze?</h3>
-                <p>CreditAI V1 will analyze your financial information, impute complex bureau data, and provide an AI-powered assessment of your credit health.</p>
-            </div>
-            <div class="info-card">
-                <h3>Personalized Insights</h3>
-                <p>Based on your results, you'll receive SHAP-powered explanations detailing exactly which factors increased or reduced your risk.</p>
-            </div>
+            <h2>Analyze Your Credit Health</h2>
+            <p>Enter your financial information and let our V1 machine learning model estimate your credit score and mathematically explain the driving risk factors.</p>
+            <a href="/credit-form/" class="dashboard-button">Run Credit Analysis</a>
         </section>
 
     </main>

@@ -1,28 +1,41 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Register - CreditAI</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 <body>
-
-    <h1>Create Your CreditAI Account</h1>
-
-    {% if success %}
-        <p>Registration successful! Your account has been created.</p>
-    {% endif %}
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Register</button>
-
-    </form>
-
+    <nav class="dashboard-navbar">
+        <div class="dashboard-logo">Credit<span>AI</span></div>
+        <div class="dashboard-nav-links">
+            <a href="/">Home</a>
+            <a href="/login/">Login</a>
+        </div>
+    </nav>
+    <div class="form-container" style="max-width: 500px;">
+        <div class="auth-form">
+            <h2 style="text-align: center; margin-bottom: 24px;">Create Account</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {% for error in field.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn" style="width: 100%; margin: 16px 0 0;">Register</button>
+            </form>
+            <p style="text-align: center; margin-top: 24px; font-size: 14px;">
+                Already have an account? <a href="/login/">Login here</a>
+            </p>
+        </div>
+    </div>
 </body>
-
 </html>
