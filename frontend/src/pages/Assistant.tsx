@@ -271,7 +271,7 @@ export function Assistant() {
               <select
                 value={mode}
                 onChange={(e) => setMode(e.target.value as AssistantMode)}
-                className="h-14 appearance-none rounded-pill border border-navy-200 bg-navy-50/40 pl-5 pr-10 text-[0.98rem] font-semibold text-navy-800 transition-[border-color,box-shadow,background-color] hover:bg-white hover:border-navy-300 focus:border-ai-500 focus:outline-none focus:ring-4 focus:ring-ai-100"
+                className="h-14 appearance-none rounded-pill border border-navy-200 bg-navy-50 pl-5 pr-10 text-[0.98rem] font-semibold text-navy-800 transition-[border-color,box-shadow,background-color] hover:bg-white hover:border-navy-300 focus:border-ai-500 focus:outline-none focus:ring-4 focus:ring-ai-100"
                 style={{
                   backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364789E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
                   backgroundRepeat: 'no-repeat',
