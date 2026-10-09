@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 800px;">
+    
+    <div style="margin-bottom: 32px; text-align: center;">
+        <h1 style="font-size: 32px; margin-bottom: 8px;">AI Assistant</h1>
+        <p style="font-size: 16px;">Ask me anything about credit, loans, or your CreditAI assessment.</p>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-icon">✨</div>
+            <div>
+                <div style="font-weight: 700; color: var(--navy-dark);">CreditAI Assistant</div>
+                <div style="font-size: 12px; color: var(--success); font-weight: 600;">● Online</div>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Initial Greeting -->
+            <div class="msg msg-bot">
+                Hello{% if user.first_name %} {{ user.first_name }}{% endif %}! I'm the CreditAI Assistant. 
+                You can ask me to explain your score, clarify financial terms like EMI, or discuss your risk factors. How can I help you today?
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-chip" onclick="sendQuickMessage('Explain my score')">Explain my score</button>
+            <button class="quick-chip" onclick="sendQuickMessage('Explain my risk factors')">Explain my risk factors</button>
+            <button class="quick-chip" onclick="sendQuickMessage('What is EMI?')">What is EMI?</button>
+            <button class="quick-chip" onclick="sendQuickMessage('What is credit utilization?')">What is credit utilization?</button>
+        </div>
+
+        <form class="chat-input-area" id="chat-form">
+            {% csrf_token %}
+            <input type="text" id="chat-input" placeholder="Ask CreditAI..." autocomplete="off" required>
+            <button type="submit" class="chat-send">➤</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const messagesContainer = document.getElementById('chat-messages');
+    
+    // Setup CSRF token for fetch requests
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function appendMessage(text, isUser = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'msg ' + (isUser ? 'msg-user' : 'msg-bot');
+        msgDiv.innerHTML = text; // allow basic HTML from response
+        messagesContainer.appendChild(msgDiv);
+        
+        // Auto-scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function sendQuickMessage(text) {
+        chatInput.value = text;
+        chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        // Add User message
+        appendMessage(message, true);
+        chatInput.value = '';
+        
+        // Add Loading indicator
+        const loadingId = 'loading-' + Date.now();
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'msg msg-bot';
+        loadingDiv.id = loadingId;
+        loadingDiv.textContent = '...';
+        messagesContainer.appendChild(loadingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Send to backend
+        try {
+            const response = await fetch("{% url 'ai_assistant_chat' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ message: message })
+            });
+            
+            const data = await response.json();
+            document.getElementById(loadingId).remove();
+            
+            if (data.response) {
+                // simple markdown bold replacement for architectural warning
+                let formattedResponse = data.response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                appendMessage(formattedResponse, false);
+            } else if (data.error) {
+                appendMessage("Sorry, there was an error processing your request.", false);
+            }
+            
+        } catch (error) {
+            document.getElementById(loadingId).remove();
+            appendMessage("Sorry, the network request failed.", false);
+        }
+    });
+</script>
+{% endblock %}

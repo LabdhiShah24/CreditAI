@@ -1,133 +1,242 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+<div class="container">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CreditAI</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
+    <div style="margin-bottom: 40px;">
+        <p class="small-heading" style="color: var(--primary);">Personal Credit Overview</p>
+        <h1 style="font-size: 32px; margin-bottom: 8px;">
+            Welcome back, 
+            {% if user.first_name or user.last_name %}
+                {{ user.first_name }} {{ user.last_name }}
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+            👋
+        </h1>
+        <p style="font-size: 16px;">Here's your current credit picture.</p>
+    </div>
 
-<body>
-
-    <!-- Navigation Bar -->
-    <nav class="dashboard-navbar">
-        <div class="dashboard-logo">Credit<span>AI</span></div>
-        <div class="dashboard-nav-links">
-            <a href="/">Home</a>
-            <a href="/history/">History</a>
-            <a href="/logout/">Logout</a>
-        </div>
-    </nav>
-
-
-    <!-- Dashboard Container -->
-    <main class="dashboard-container">
-
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-            <p class="small-heading">Credit Health Dashboard</p>
-            <h1>Welcome back, {{ user.username }} 👋</h1>
-            <p class="welcome-text">Here's an overview of your financial health. Let's understand your credit better.</p>
-        </section>
-
-
-        <!-- Model Performance Section -->
-        <div style="margin-bottom: 48px;">
-            <p class="small-heading">Model Performance</p>
-            <div class="summary-cards" style="margin-bottom: 16px;">
-                <div class="dashboard-card">
-                    <div class="card-title">Test ROC-AUC</div>
-                    <div class="score-number" style="font-size: 32px;">76.49%</div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="card-title">Test PR-AUC</div>
-                    <div class="score-number" style="font-size: 32px;">25.16%</div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="card-title">Test Brier Score</div>
-                    <div class="score-number" style="font-size: 32px;">0.0676</div>
-                </div>
-            </div>
-            <p style="font-size: 14px; color: var(--text-muted); max-width: 800px;">
-                These metrics summarize the model's evaluation on the Home Credit test dataset. They describe model performance on that evaluation data and are not a guarantee of performance on future or real-world applicants.
+    {% if not latest %}
+        <div style="background: white; border: 1px dashed var(--text-light); border-radius: var(--radius-lg); padding: 48px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+            <h2 style="font-size: 24px; margin-bottom: 8px;">No Assessments Yet</h2>
+            <p style="margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                You haven't analyzed your credit yet. Run an analysis to generate your AI-powered credit profile.
             </p>
+            <a href="{% url 'credit_form' %}" class="btn">Analyze Credit Health</a>
         </div>
-
-
-        <!-- Credit Summary Cards -->
-        <p class="small-heading">Current Applicant</p>
-        <section class="summary-cards">
-
-            <!-- Credit Score -->
-            <div class="dashboard-card">
-                <div class="card-title">CreditAI Score</div>
-                <div class="score-number">
-                    {% if latest %}
-                        {{ latest.creditai_score }}
-                    {% else %}
-                        ---
-                    {% endif %}
+    {% else %}
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 32px;">
+            <!-- Score Gauge -->
+            <div class="gauge-container">
+                <div style="position: absolute; top: 24px; left: 24px;">
+                    <div class="small-heading">Your CreditAI Score</div>
                 </div>
-                <p>Your AI-powered risk score</p>
-            </div>
-
-            <!-- Risk Level -->
-            <div class="dashboard-card">
-                <div class="card-title">Risk Band</div>
-                <div class="risk-status 
-                    {% if latest %}
-                        {% if latest.risk_band == 'High Risk' or latest.risk_band == 'Very High Risk' %}risk-high{% endif %}
-                        {% if latest.risk_band == 'Medium Risk' %}risk-medium{% endif %}
-                        {% if latest.risk_band == 'Low Risk' or latest.risk_band == 'Very Low Risk' %}risk-low{% endif %}
-                    {% else %}
-                        risk-default
-                    {% endif %}
-                ">
-                    {% if latest %}
+                <div style="position: absolute; top: 24px; right: 24px;">
+                    <span class="badge 
+                        {% if latest.risk_band == 'High Risk' or latest.risk_band == 'Very High Risk' %}badge-high
+                        {% elif latest.risk_band == 'Medium Risk' %}badge-medium
+                        {% else %}badge-low{% endif %}">
                         {{ latest.risk_band }}
-                    {% else %}
-                        Not Calculated
-                    {% endif %}
+                    </span>
                 </div>
-                <p>Your financial risk assessment</p>
+                
+                <svg class="gauge-svg" viewBox="0 0 400 220" style="margin-top: 40px;">
+                    <!-- Background Arc -->
+                    <path class="gauge-track" d="M 40 200 A 160 160 0 0 1 360 200" />
+                    
+                    <!-- Colored Segments -->
+                    <!-- Very High Risk (300-450) -> 25% of 180 = 45 deg -->
+                    <path class="gauge-danger" d="M 40 200 A 160 160 0 0 1 86.87 86.87" />
+                    <!-- High Risk (451-550) -> 16.6% -> 30 deg -->
+                    <path class="gauge-warning" style="stroke: #f97316;" d="M 86.87 86.87 A 160 160 0 0 1 158.56 45.42" />
+                    <!-- Medium Risk (551-650) -> 16.6% -> 30 deg -->
+                    <path class="gauge-warning" d="M 158.56 45.42 A 160 160 0 0 1 241.44 45.42" />
+                    <!-- Low Risk (651-750) -> 16.6% -> 30 deg -->
+                    <path class="gauge-success" style="stroke: #84cc16;" d="M 241.44 45.42 A 160 160 0 0 1 313.13 86.87" />
+                    <!-- Very Low Risk (751-900) -> 25% -> 45 deg -->
+                    <path class="gauge-success" d="M 313.13 86.87 A 160 160 0 0 1 360 200" />
+                    
+                    <!-- Min/Max Labels -->
+                    <text x="40" y="215" class="gauge-minmax" text-anchor="middle">300</text>
+                    <text x="360" y="215" class="gauge-minmax" text-anchor="middle">900</text>
+                    
+                    <!-- Needle -->
+                    <g id="gauge-needle-group-{{ latest.pk }}" class="gauge-needle" style="transform: rotate(-90deg);">
+                        <polygon points="190,195 210,195 200,60" />
+                        <circle cx="200" cy="195" r="12" class="gauge-needle-center" />
+                    </g>
+                    
+                    <!-- Value text -->
+                    <text x="200" y="170" class="gauge-value" id="score-text-{{ latest.pk }}">0</text>
+                </svg>
             </div>
-
-            <!-- History -->
-            <div class="dashboard-card">
-                <div class="card-title">Total Applications</div>
-                <div class="health-status" style="color: var(--primary);">
-                    {{ applications|length }}
+            
+            <!-- Payment Risk -->
+            <div class="info-card" style="justify-content: center; align-items: center; text-align: center; padding: 48px 24px;">
+                <div class="info-card-icon icon-purple" style="width: 56px; height: 56px; font-size: 24px; margin-bottom: 24px;">
+                    🛡️
                 </div>
-                <p>Applications submitted</p>
-            </div>
-
-        </section>
-
-        {% if latest %}
-        <div class="dashboard-probability">
-            <div class="prob-info">
-                <h3>Estimated Payment-Difficulty Probability</h3>
-                <p>Calibrated probability of the modeled outcome from training data.</p>
-                <p style="margin-top: 12px; color: var(--text-muted);">
-                    <em>Last analyzed on {{ latest.created_at|date:"M d, Y" }}</em>
+                <div class="info-card-title">Payment Risk</div>
+                <div class="info-card-value" style="font-size: 48px; margin-bottom: 8px;">{{ latest.calibrated_pd }}%</div>
+                <p style="margin: 0; font-size: 14px;">Estimated payment-difficulty probability</p>
+                
+                <p style="font-size: 12px; margin-top: 16px; color: var(--text-light);">
+                    Last analyzed on {{ latest.created_at|date:"M d, Y" }}
                 </p>
             </div>
-            <div class="prob-value">{{ latest.calibrated_pd }}%</div>
         </div>
-        {% endif %}
 
+        <div class="small-heading" style="margin-top: 48px;">Your Credit Profile</div>
+        <div class="card-grid">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">Monthly Income</div>
+                    <div class="info-card-icon icon-green">💰</div>
+                </div>
+                <div class="info-card-value">₹{{ latest.income_monthly|floatformat:0 }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: auto;">{{ latest.income_type }}</div>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">Loan Amount</div>
+                    <div class="info-card-icon icon-orange">🏦</div>
+                </div>
+                <div class="info-card-value">₹{{ latest.loan_credit_amount|floatformat:0 }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: auto;">Requested</div>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">Monthly EMI</div>
+                    <div class="info-card-icon icon-blue">💳</div>
+                </div>
+                <div class="info-card-value">₹{{ latest.loan_annuity_emi|floatformat:0 }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: auto;">Expected Payment</div>
+            </div>
 
-        <!-- Credit Prediction Section -->
-        <section class="prediction-section">
-            <h2>Analyze Your Credit Health</h2>
-            <p>Enter your financial information and let our V1 machine learning model estimate your credit score and mathematically explain the driving risk factors.</p>
-            <a href="/credit-form/" class="dashboard-button">Run Credit Analysis</a>
-        </section>
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-title">Employment</div>
+                    <div class="info-card-icon icon-gray">💼</div>
+                </div>
+                <div class="info-card-value">{{ latest.employment_years }} <span style="font-size: 16px; font-weight: normal;">yrs</span></div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: auto;">History</div>
+            </div>
+        </div>
+        
+        <div class="small-heading" style="margin-top: 48px;">Your Risk Factors</div>
+        <p style="margin-bottom: 24px;">These factors had the strongest influence on your CreditAI assessment.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            <div class="factor-card">
+                <div class="factor-group">
+                    <h3 style="color: var(--danger);"><span class="factor-icon-danger">↑</span> Higher Modeled Risk</h3>
+                    {% if latest.shap_explanations.risk_increasing %}
+                        {% for factor in latest.shap_explanations.risk_increasing %}
+                            <div class="factor-item">
+                                <span class="factor-name">{{ factor.name }}</span>
+                                <span class="factor-val">{{ factor.value }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 14px; margin-top: 16px;">No significant increasing risk factors identified.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="factor-card">
+                <div class="factor-group">
+                    <h3 style="color: var(--success);"><span class="factor-icon-success">↓</span> Lower Modeled Risk</h3>
+                    {% if latest.shap_explanations.risk_reducing %}
+                        {% for factor in latest.shap_explanations.risk_reducing %}
+                            <div class="factor-item">
+                                <span class="factor-name">{{ factor.name }}</span>
+                                <span class="factor-val">{{ factor.value }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 14px; margin-top: 16px;">No significant reducing risk factors identified.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 48px; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px;">
+            <div>
+                <div class="small-heading" style="margin-bottom: 0;">Recent Assessments</div>
+            </div>
+            <a href="{% url 'history' %}" style="font-weight: 600; font-size: 14px;">View All History →</a>
+        </div>
+        
+        <!-- Compact History Cards for Dashboard -->
+        {% for app in applications|slice:":3" %}
+        <a href="{% url 'assessment_detail' app.pk %}" style="display: block; background: var(--bg-card); padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 12px; color: inherit; transition: box-shadow 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 700; color: var(--navy-dark); font-size: 18px; margin-bottom: 4px;">{{ app.creditai_score }} Score</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">{{ app.created_at|date:"M d, Y" }} • {{ app.calibrated_pd }}% Payment Risk</div>
+                </div>
+                <div>
+                    <span class="badge 
+                        {% if app.risk_band == 'High Risk' or app.risk_band == 'Very High Risk' %}badge-high
+                        {% elif app.risk_band == 'Medium Risk' %}badge-medium
+                        {% else %}badge-low{% endif %}">
+                        {{ app.risk_band }}
+                    </span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
 
-    </main>
+    {% endif %}
+</div>
+{% endblock %}
 
-</body>
-</html>
+{% block extra_scripts %}
+{% if latest %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Score Gauge Logic
+        const score = {{ latest.creditai_score|default:0 }};
+        const minScore = 300;
+        const maxScore = 900;
+        
+        // Calculate rotation angle
+        // Angle range: -90deg (300) to 90deg (900) = 180 degrees total
+        let rotation = -90;
+        if (score >= minScore && score <= maxScore) {
+            const percentage = (score - minScore) / (maxScore - minScore);
+            rotation = -90 + (percentage * 180);
+        } else if (score > maxScore) {
+            rotation = 90;
+        }
+        
+        // Set needle rotation with a slight delay for animation
+        setTimeout(() => {
+            document.getElementById('gauge-needle-group-{{ latest.pk }}').style.transform = `rotate(${rotation}deg)`;
+            
+            // Animate number
+            let current = minScore;
+            const target = score;
+            const duration = 1500;
+            const stepTime = Math.abs(Math.floor(duration / (target - minScore)));
+            
+            if (target > minScore) {
+                const timer = setInterval(() => {
+                    current += Math.ceil((target - current) / 10) || 1;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    document.getElementById('score-text-{{ latest.pk }}').textContent = current;
+                }, 20);
+            }
+        }, 100);
+    });
+</script>
+{% endif %}
+{% endblock %}

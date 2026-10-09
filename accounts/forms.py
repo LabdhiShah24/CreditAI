@@ -1,4 +1,14 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name')
 
 class CreditApplicationForm(forms.Form):
     EDUCATION_CHOICES = [
@@ -75,6 +85,43 @@ class CreditApplicationForm(forms.Form):
         required=False,
         label='Price of Goods (If applicable) (₹)',
         widget=forms.NumberInput(attrs={'placeholder': 'e.g., 200000'})
+    )
+    
+    # V3 Credit History Fields
+    bureau_total_loans_count = forms.FloatField(
+        min_value=0.0,
+        label='Total Credit Accounts',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 2', 'step': '1'})
+    )
+    
+    bureau_active_loans_count = forms.FloatField(
+        min_value=0.0,
+        label='Active Credit Accounts',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 0', 'step': '1'})
+    )
+    
+    bureau_total_debt_sum = forms.FloatField(
+        min_value=0.0,
+        label='Total Outstanding Debt (₹)',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 50000'})
+    )
+    
+    bureau_total_credit_limit = forms.FloatField(
+        min_value=0.0,
+        label='Total Credit Limit (₹)',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 100000'})
+    )
+    
+    bureau_credit_history_length_years = forms.FloatField(
+        min_value=0.0,
+        label='Credit History Length (Years)',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 5.5', 'step': '0.1'})
+    )
+    
+    prev_app_refused_count = forms.FloatField(
+        min_value=0.0,
+        label='Previous Credit Refusals',
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g., 0', 'step': '1'})
     )
     
     def clean(self):

@@ -6,12 +6,15 @@ import shap
 from pathlib import Path
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import os
+import json
 
 from .models import CreditApplication
-from .forms import CreditApplicationForm
+from .forms import CreditApplicationForm, CustomUserCreationForm
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,15 +44,15 @@ def home(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return render(request, "register.html", {
-                "form": UserCreationForm(),
+                "form": CustomUserCreationForm(),
                 "success": True
             })
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, "register.html", {"form": form})
 
 
@@ -91,6 +94,46 @@ def history(request):
 def assessment_detail(request, pk):
     assessment = get_object_or_404(CreditApplication, pk=pk, user=request.user)
     return render(request, "assessment_detail.html", {"application": assessment})
+
+
+@login_required
+def profile_view(request):
+    latest_app = request.user.credit_applications.order_by('-created_at').first()
+    return render(request, "profile.html", {"latest": latest_app})
+
+
+@login_required
+def ai_assistant_chat(request):
+    if request.method == "POST":
+        # Check for API Key
+        # We simulate this checking process for the architectural stub
+        if not os.environ.get('OPENAI_API_KEY') and not os.environ.get('GEMINI_API_KEY'):
+            return JsonResponse({
+                "response": "⚠️ **Configuration Required**: The AI Assistant provider API key is not currently configured on the server. Please contact the administrator to set `OPENAI_API_KEY` or `GEMINI_API_KEY` in the environment variables to activate live AI responses."
+            })
+            
+        try:
+            data = json.loads(request.body)
+            message = data.get('message', '')
+            
+            # Context Gathering Architecture (Internal logic stub for when API is active)
+            latest_app = request.user.credit_applications.order_by('-created_at').first()
+            context = None
+            if latest_app:
+                context = {
+                    "score": latest_app.creditai_score,
+                    "risk_band": latest_app.risk_band,
+                    "pd": latest_app.calibrated_pd
+                }
+            
+            # The actual LLM call would go here using `message` and `context`
+            
+            return JsonResponse({"response": f"I received your message: '{message}'. To generate real answers based on your profile, please configure an LLM provider."})
+            
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+            
+    return render(request, "ai_assistant.html")
 
 
 @login_required
