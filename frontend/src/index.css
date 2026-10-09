@@ -1,0 +1,74 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+
+:root {
+  --color-canvas: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-muted: #fbfaf8;
+
+  --color-navy-50: #F2F5F9;
+  --color-navy-100: #E4E9F1;
+  --color-navy-200: #C6CEDC;
+  --color-navy-300: #93A3BC;
+  --color-navy-400: #64789E;
+  --color-navy-500: #3A5786;
+  --color-navy-600: #26406F;
+  --color-navy-700: #1B2C52;
+  --color-navy-800: #12203F;
+  --color-navy-900: #0B1530;
+
+  --color-white: #ffffff;
+}
+
+.dark {
+  --color-canvas: #04091a;
+  --color-surface: #0b1530;
+  --color-muted: #12203f;
+
+  --color-navy-50: #12203f;
+  --color-navy-100: #1b2c52;
+  --color-navy-200: #26406f;
+  --color-navy-300: #3a5786;
+  --color-navy-400: #64789e;
+  --color-navy-500: #93a3bc;
+  --color-navy-600: #c6cedc;
+  --color-navy-700: #e4e9f1;
+  --color-navy-800: #f2f5f9;
+  --color-navy-900: #ffffff;
+
+  --color-white: #0b1530;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-navy-900);
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+*:focus-visible {
+  outline: 2px solid #5a46e0;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
