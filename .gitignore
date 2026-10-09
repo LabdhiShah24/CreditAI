@@ -57,3 +57,10 @@ ml/credit_model.pkl
 ml/imputer.pkl
 ml/features.pkl
 ml/train_model.py
+
+# New ML Artifacts
+ml/artifacts/
+
+# User Uploaded Media
+media/
+profiles/
